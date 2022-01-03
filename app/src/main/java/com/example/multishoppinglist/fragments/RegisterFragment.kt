@@ -15,12 +15,12 @@ import com.google.firebase.ktx.Firebase
 
 class RegisterFragment : Fragment() {
     private val database = Firebase.database
-    private val myRef = database.getReference("message")
+    private val myRef = database.getReference("new table")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        myRef.setValue("Hello, World!")
+        myRef.setValue("Hello, Shark!")
 
     }
 

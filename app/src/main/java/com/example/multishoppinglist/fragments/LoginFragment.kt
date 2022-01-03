@@ -1,11 +1,7 @@
 package com.example.multishoppinglist.fragments
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.print.PrinterId
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,20 +10,18 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.multishoppinglist.LoginActivity
+import androidx.fragment.app.Fragment
 import com.example.multishoppinglist.MainActivity
 import com.example.multishoppinglist.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+
 
 class LoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
 
-    val database = Firebase.database
     private val registerFragment = RegisterFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,18 +64,19 @@ class LoginFragment : Fragment() {
 
         val button = view.findViewById<Button>(R.id.btnLogin)
         button.setOnClickListener {
-            auth.signInWithEmailAndPassword(email.toString(), password.toString())
+            var umail = email.text.toString()
+            var pass = password.text.toString()
+
+            auth.signInWithEmailAndPassword(umail, pass)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
-                        println("sucess")
+                        Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, task.exception!!.message.toString(), Toast.LENGTH_SHORT).show()
-                        println("failed")
+                        Toast.makeText(context,"Login Failed", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-
         }
+
 
 
 

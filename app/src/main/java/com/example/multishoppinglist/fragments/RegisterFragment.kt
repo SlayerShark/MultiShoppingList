@@ -6,23 +6,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.multishoppinglist.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.android.gms.tasks.OnCompleteListener
 
 class RegisterFragment : Fragment() {
-    private val database = Firebase.database
-    private val myRef = database.getReference("new table")
 
+    private val database = Firebase.database
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        myRef.setValue("Hello, Shark!")
 
+        // Initialize Firebase Auth
+        auth = Firebase.auth
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,10 +46,59 @@ class RegisterFragment : Fragment() {
             fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 
+        val email = view.findViewById<EditText>(R.id.regEmail)
+        val password = view.findViewById<EditText>(R.id.regPassword)
+
         val register = view.findViewById<Button>(R.id.btnRegister)
         register.setOnClickListener{
+/*            when {
+                TextUtils.isEmpty(email?.text.toString().trim{it <= ' '}) -> {
+                    Toast.makeText(context, "Empty email", Toast.LENGTH_SHORT).show()
+                }
+                TextUtils.isEmpty(password?.text.toString().trim{it <= ' '}) -> {
+                    Toast.makeText(context, "Empty password", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {*/
+                    createAccount(email, password)
+//                }
+//            }
         }
 
         return view
     }
+
+
+    private fun createAccount(email: EditText, password: EditText) {
+
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.toString(),
+            password.toString()
+        )
+            .addOnCompleteListener(
+                OnCompleteListener<AuthResult> { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "sucessfull register", Toast.LENGTH_SHORT).show()
+                                        println("createUserWithEmail:success")
+
+                } else {
+                    Toast.makeText(context, task.exception!!.message.toString() , Toast.LENGTH_SHORT).show()
+                                        println("Authentication failed.")
+
+                }
+            })
+    }
+
+
+/*    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if(currentUser != null){
+            reload();
+        }
+    }
+
+    private fun reload() {
+        TODO("Not yet implemented")
+    }*/
 }

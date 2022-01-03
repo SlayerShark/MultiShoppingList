@@ -8,7 +8,7 @@
 
 
     <EditText
-        android:id="@+id/login_email"
+        android:id="@+id/loginEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
@@ -16,19 +16,19 @@
         />
 
     <EditText
-        android:id="@+id/login_password"
+        android:id="@+id/loginPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:layout_below="@id/login_email"
+        android:layout_below="@id/loginEmail"
         android:layout_marginBottom="20dp"
         />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_password"
+        android:layout_below="@+id/loginPassword"
         android:layout_marginBottom="20dp"
         android:text="Login" />
 
@@ -36,7 +36,7 @@
         android:id="@+id/text_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login"
+        android:layout_below="@id/btnLogin"
         android:layout_marginBottom="20dp"
         android:text="New user? Click here to Register"
         android:textAlignment="center" />

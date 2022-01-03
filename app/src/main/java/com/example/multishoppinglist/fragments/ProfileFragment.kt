@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.multishoppinglist.R
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

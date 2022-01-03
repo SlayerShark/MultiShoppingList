@@ -8,21 +8,22 @@
     tools:context=".fragments.RegisterFragment">
 
     <EditText
-        android:id="@+id/title_et"
-        android:hint="Title"
+        android:id="@+id/reg_email"
+        android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"/>
 
     <EditText
-        android:id="@+id/description_et"
-        android:hint="Description"
+        android:id="@+id/reg_password"
+        android:hint="Password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:inputType="textPassword"/>
 
     <Button
-        android:id="@+id/add_btn"
+        android:id="@+id/btnRegister"
         android:text="Register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

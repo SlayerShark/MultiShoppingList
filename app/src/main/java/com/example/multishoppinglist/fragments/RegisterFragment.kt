@@ -5,17 +5,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.multishoppinglist.R
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class RegisterFragment : Fragment() {
+    private val database = Firebase.database
+    private val myRef = database.getReference("message")
 
-//    private val loginFragment = LoginFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Register")
+        myRef.setValue("Hello, World!")
+
     }
 
     override fun onCreateView(
@@ -24,15 +30,15 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_register, container, false)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Register")
 
         val login = view.findViewById<TextView>(R.id.text_login)
         login.setOnClickListener {
             fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
 
-/*            //go to another fragment from fragment
-            val fr = fragmentManager?.beginTransaction()
-            fr?.replace(R.id.loginMainFragment, loginFragment)
-            fr?.commit()*/
+        val register = view.findViewById<Button>(R.id.btnRegister)
+        register.setOnClickListener{
         }
 
         return view

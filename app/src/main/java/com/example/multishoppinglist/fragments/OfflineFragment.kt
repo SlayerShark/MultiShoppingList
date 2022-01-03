@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.multishoppinglist.R
 
-class OfflineFragment : Fragment() {
+class OfflineFragment : Fragment(R.layout.fragment_offline) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

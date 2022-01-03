@@ -10,8 +10,12 @@ import com.example.multishoppinglist.fragments.OfflineFragment
 import com.example.multishoppinglist.fragments.OnlineFragment
 import com.example.multishoppinglist.fragments.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+    private val database = Firebase.database
+    private val myRef = database.getReference("message")
 
     private val offlineFragment = OfflineFragment()
     private val onlineFragment = OnlineFragment()
@@ -23,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         //toolbar replace with own
         setSupportActionBar(findViewById(R.id.toolbar))
-
 
         //open the fragment while loading
         setCurrentFragment(offlineFragment)

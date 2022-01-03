@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.multishoppinglist.LoginActivity
 import com.example.multishoppinglist.MainActivity
 import com.example.multishoppinglist.R
 
@@ -18,16 +20,17 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Login")
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Login")
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+
+
 
         val register = view.findViewById<TextView>(R.id.text_register)
         register.setOnClickListener {
@@ -37,10 +40,10 @@ class LoginFragment : Fragment() {
             fr?.commit()
         }
 
+        //didn't worked on textView. so, button
         val gotoMainActivity = view.findViewById<Button>(R.id.gotoMainActivity)
         gotoMainActivity.setOnClickListener {
             Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
-
 
             activity?.let {
                 val intent = Intent(it, MainActivity::class.java)

@@ -13,6 +13,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        setSupportActionBar(findViewById(R.id.toolbar_login))
+
         setCurrentFragment(loginFragment)
     }
 

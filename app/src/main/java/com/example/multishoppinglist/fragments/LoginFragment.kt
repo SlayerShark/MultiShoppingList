@@ -13,15 +13,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.multishoppinglist.MainActivity
 import com.example.multishoppinglist.R
+import com.example.multishoppinglist.databinding.FragmentLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 
 class LoginFragment : Fragment() {
+    private lateinit var binding: FragmentLoginBinding
 
     private lateinit var auth: FirebaseAuth
-
     private val registerFragment = RegisterFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +39,9 @@ class LoginFragment : Fragment() {
     ): View? {
         (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Login")
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        val register = view.findViewById<TextView>(R.id.text_register)
-        register.setOnClickListener {
+        binding.textRegister.setOnClickListener {
             //go to another fragment from fragment
             val fr = fragmentManager?.beginTransaction()
             fr?.replace(R.id.loginMainFragment, registerFragment)?.addToBackStack("logfrag")
@@ -49,8 +49,7 @@ class LoginFragment : Fragment() {
         }
 
         //didn't worked on textView. so, button
-        val gotoMainActivity = view.findViewById<Button>(R.id.gotoMainActivity)
-        gotoMainActivity.setOnClickListener {
+        binding.gotoMainActivity.setOnClickListener {
             Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
             activity?.let {
                 val intent = Intent(it, MainActivity::class.java)
@@ -58,35 +57,24 @@ class LoginFragment : Fragment() {
             }
         }
 
-        val login = view.findViewById<Button>(R.id.btnLogin)
-        login.setOnClickListener {
-            login()
-        }
+        binding.btnLogin.setOnClickListener {
+            val email = binding.loginEmail.text.toString().trim()
+            val password = binding.loginPassword.text.toString().trim()
 
-        return view
-    }
-
-    fun login(){
-        val email = view?.findViewById<EditText>(R.id.loginEmail)
-        val password = view?.findViewById<EditText>(R.id.loginPassword)
-
-        var umail = email?.text.toString().trim()
-        var pass = password?.text.toString().trim()
-
-        auth.signInWithEmailAndPassword(umail, pass)
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
-                    activity?.let {
-                        val intent = Intent(it, MainActivity::class.java)
-                        it.startActivity(intent)
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
+                        activity?.let {
+                            val intent = Intent(it, MainActivity::class.java)
+                            it.startActivity(intent)
+                        }
+                    } else {
+                        Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(context,"Login Failed", Toast.LENGTH_SHORT).show()
                 }
-            }
+        }
+        return binding.root
     }
-
-
 }

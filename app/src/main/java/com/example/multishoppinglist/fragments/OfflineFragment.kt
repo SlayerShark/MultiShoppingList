@@ -32,9 +32,7 @@ class OfflineFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-//        val view = inflater.inflate(R.layout.fragment_offline, container, false)
         binding = FragmentOfflineBinding.inflate(inflater, container, false)
-
 
         val user = Firebase.auth.currentUser
         user?.let {
@@ -54,18 +52,7 @@ class OfflineFragment : Fragment() {
             (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Welcome, "+email.toString())
 
             binding.hello.setText("user id: "+uid.toString())
-
-//            val disp_email = view.findViewById<TextView>(R.id.hello)
-//            disp_email.setText("user id: "+uid.toString())
-
         }
-
-
-
-
-
         return binding.root
-
-//        return view
     }
 }

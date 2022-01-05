@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.multishoppinglist.R
+import com.example.multishoppinglist.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
@@ -21,13 +22,13 @@ import com.google.firebase.ktx.Firebase
 import com.google.android.gms.tasks.OnCompleteListener
 
 class RegisterFragment : Fragment() {
+    private lateinit var binding: FragmentRegisterBinding
 
     private val database = Firebase.database
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Initialize Firebase Auth
         auth = Firebase.auth
     }
@@ -38,23 +39,18 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Register")
 
-        val login = view.findViewById<TextView>(R.id.text_login)
-        login.setOnClickListener {
+        binding.textLogin.setOnClickListener {
             fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 
-        val email = view.findViewById<EditText>(R.id.regEmail)
-        val password = view.findViewById<EditText>(R.id.regPassword)
+        binding.btnRegister.setOnClickListener {
+            val email = binding.regEmail.text.toString()
+            val password = binding.regPassword.text.toString()
 
-        val register = view.findViewById<Button>(R.id.btnRegister)
-        register.setOnClickListener {
-            var mail = email.text.toString()
-            var pass = password.text.toString()
-
-            auth.createUserWithEmailAndPassword(mail, pass)
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(requireContext(), "successfully register", Toast.LENGTH_SHORT).show()
@@ -69,8 +65,7 @@ class RegisterFragment : Fragment() {
 
                     }
                 }
-//            }
             }
-        return view
+        return binding.root
     }
 }

@@ -52,37 +52,41 @@ class LoginFragment : Fragment() {
         val gotoMainActivity = view.findViewById<Button>(R.id.gotoMainActivity)
         gotoMainActivity.setOnClickListener {
             Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
-
             activity?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 it.startActivity(intent)
             }
         }
 
-        val email = view.findViewById<EditText>(R.id.loginEmail)
-        val password = view.findViewById<EditText>(R.id.loginPassword)
-
-        val button = view.findViewById<Button>(R.id.btnLogin)
-        button.setOnClickListener {
-            var umail = email.text.toString()
-            var pass = password.text.toString()
-
-            auth.signInWithEmailAndPassword(umail, pass)
-                .addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context,"Login Failed", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        val login = view.findViewById<Button>(R.id.btnLogin)
+        login.setOnClickListener {
+            login()
         }
-
-
-
-
-
-
 
         return view
     }
+
+    fun login(){
+        val email = view?.findViewById<EditText>(R.id.loginEmail)
+        val password = view?.findViewById<EditText>(R.id.loginPassword)
+
+        var umail = email?.text.toString().trim()
+        var pass = password?.text.toString().trim()
+
+        auth.signInWithEmailAndPassword(umail, pass)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
+                    activity?.let {
+                        val intent = Intent(it, MainActivity::class.java)
+                        it.startActivity(intent)
+                    }
+                } else {
+                    Toast.makeText(context,"Login Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+
 }

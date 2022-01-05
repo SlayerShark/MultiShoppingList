@@ -1,5 +1,6 @@
 package com.example.multishoppinglist
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -10,12 +11,14 @@ import com.example.multishoppinglist.fragments.OfflineFragment
 import com.example.multishoppinglist.fragments.OnlineFragment
 import com.example.multishoppinglist.fragments.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
-    private val database = Firebase.database
-    private val myRef = database.getReference("message")
+    private lateinit var auth: FirebaseAuth;
 
     private val offlineFragment = OfflineFragment()
     private val onlineFragment = OnlineFragment()
@@ -24,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        auth = Firebase.auth
 
         //toolbar replace with own
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -70,10 +75,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item?.itemId == R.id.setting)
+        if (item.itemId == R.id.logout)
+            logout()
             Toast.makeText(this,"setting clicked", Toast.LENGTH_SHORT).show()
 
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+
+
+        } else {
+            //if no user, go to login
+            val intent = Intent(this, LoginActivity::class.java)
+            this.startActivity(intent)
+            finish()
+        }
+    }
+
+
+
+
+
+    fun logout() {
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+    }
 }

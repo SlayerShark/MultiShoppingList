@@ -59,6 +59,7 @@ class RegisterFragment : Fragment() {
                     if (task.isSuccessful) {
                         Toast.makeText(requireContext(), "successfully register", Toast.LENGTH_SHORT).show()
                         println("createUserWithEmail:success")
+                        fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
                     } else {
                         Toast.makeText(requireContext(), task.exception!!.message.toString(),

@@ -8,6 +8,20 @@
     tools:context=".fragments.RegisterFragment">
 
     <EditText
+        android:id="@+id/regName"
+        android:hint="Full Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"/>
+
+    <EditText
+        android:id="@+id/regCountry"
+        android:hint="Country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"/>
+
+    <EditText
         android:id="@+id/regEmail"
         android:hint="Email"
         android:layout_width="match_parent"

@@ -31,7 +31,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    //
+    //can be used instead of findViewById
     buildFeatures {
         viewBinding = true
     }

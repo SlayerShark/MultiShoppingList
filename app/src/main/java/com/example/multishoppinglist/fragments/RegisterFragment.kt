@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.multishoppinglist.R
+import com.example.multishoppinglist.User
 import com.example.multishoppinglist.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.AuthResult
@@ -20,11 +21,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterFragment : Fragment() {
+    private lateinit var database: DatabaseReference
     private lateinit var binding: FragmentRegisterBinding
 
-    private val database = Firebase.database
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +53,18 @@ class RegisterFragment : Fragment() {
             val email = binding.regEmail.text.toString()
             val password = binding.regPassword.text.toString()
 
+            val name = binding.regName.text.toString()
+            val country = binding.regCountry.text.toString()
+
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
+                        //to store user all data
+                        database = FirebaseDatabase.getInstance().getReference("Users")
+                        val id = auth.currentUser?.uid
+                        val User = User(id, name, email, country)
+                        database.child(id).setValue(User)
+
                         Toast.makeText(requireContext(), "successfully register", Toast.LENGTH_SHORT).show()
                         println("createUserWithEmail:success")
                         fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)

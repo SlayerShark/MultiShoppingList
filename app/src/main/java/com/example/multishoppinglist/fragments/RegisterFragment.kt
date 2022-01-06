@@ -52,7 +52,6 @@ class RegisterFragment : Fragment() {
         binding.btnRegister.setOnClickListener {
             val email = binding.regEmail.text.toString()
             val password = binding.regPassword.text.toString()
-
             val name = binding.regName.text.toString()
             val country = binding.regCountry.text.toString()
 
@@ -62,8 +61,15 @@ class RegisterFragment : Fragment() {
                         //to store user all data
                         database = FirebaseDatabase.getInstance().getReference("Users")
                         val id = auth.currentUser?.uid
-                        val User = User(id, name, email, country)
-                        database.child(id).setValue(User)
+                        val user = User(id, name, email, country)
+                        if (id != null) {
+                            database.child(id).setValue(user)
+                        }
+                        //clear text fields
+                        binding.regEmail.text.clear()
+                        binding.regPassword.text.clear()
+                        binding.regName.text.clear()
+                        binding.regCountry.text.clear()
 
                         Toast.makeText(requireContext(), "successfully register", Toast.LENGTH_SHORT).show()
                         println("createUserWithEmail:success")

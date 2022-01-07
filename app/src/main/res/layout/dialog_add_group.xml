@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
+        android:hint="Group Name"
         android:id="@+id/addGroupTitle" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

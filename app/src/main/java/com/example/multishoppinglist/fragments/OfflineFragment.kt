@@ -1,34 +1,26 @@
 package com.example.multishoppinglist.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
-import com.example.multishoppinglist.LoginActivity
-import com.example.multishoppinglist.R
-import com.example.multishoppinglist.User
+import com.example.multishoppinglist.databinding.DialogAddGroupBinding
+import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentOfflineBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.example.multishoppinglist.model.Group
+import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
-import java.lang.ref.Reference
 
 class OfflineFragment : Fragment() {
-    private lateinit var database: DatabaseReference
-
     private lateinit var binding: FragmentOfflineBinding
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +38,42 @@ class OfflineFragment : Fragment() {
             val id : String = user.uid
             readData(id)
         }
+
+        binding.addItemDialog.setOnClickListener{ addItem() }
+
         return binding.root
     }
+
+    private fun addItem() {
+        val inflater = layoutInflater
+        val binding: DialogAddItemBinding = DialogAddItemBinding.inflate(inflater)
+
+        val alertDialog = AlertDialog.Builder(requireActivity())
+        alertDialog.setTitle("Add New Item")
+        alertDialog.setView(binding.root)
+        alertDialog.setCancelable(false)
+
+        alertDialog.setNegativeButton("Cancel"){ dialog, which ->
+            Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
+        }
+        alertDialog.setPositiveButton("Add"){ dialog, which ->
+            val itemName = binding.addTitle.text.toString()
+            val itemQuantity = binding.addQuantity.text.toString()
+            val id = database.push().key        //to auto generate id
+            val userId = Firebase.auth.currentUser?.uid
+
+            database = FirebaseDatabase.getInstance().getReference("Items")
+            val item = Item(id, userId, itemName, itemQuantity)
+            database.child(id!!).setValue(item)
+
+            Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+
+    }
+
 
     //this function for retrieving data from rtdb using Uid
     private fun readData(id : String) {

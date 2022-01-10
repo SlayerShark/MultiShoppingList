@@ -1,7 +1,10 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +17,8 @@ import androidx.fragment.app.Fragment
 import com.example.multishoppinglist.MainActivity
 import com.example.multishoppinglist.R
 import com.example.multishoppinglist.databinding.FragmentLoginBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -49,8 +54,7 @@ class LoginFragment : Fragment() {
         }
 
         //didn't worked on textView. so, button
-        binding.gotoMainActivity.setOnClickListener {
-            Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
+        binding.noUserLogin.setOnClickListener {
             activity?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 it.startActivity(intent)
@@ -64,12 +68,14 @@ class LoginFragment : Fragment() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
+//                        ProgressDialog(context).setMessage("Registering User")
                         val user = auth.currentUser
                         Toast.makeText(context, "Logged In Successfully", Toast.LENGTH_SHORT).show()
                         activity?.let {
                             val intent = Intent(it, MainActivity::class.java)
                             it.startActivity(intent)
                         }
+//                        ProgressDialog(context).dismiss()
                     } else {
                         Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                     }

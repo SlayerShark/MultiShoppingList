@@ -15,15 +15,22 @@
         android:layout_marginBottom="20dp"/>
 
     <EditText
-        android:id="@+id/regCountry"
-        android:hint="Country"
+        android:id="@+id/regEmail"
+        android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"/>
 
     <EditText
-        android:id="@+id/regEmail"
-        android:hint="Email"
+        android:id="@+id/regPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:hint="Phone"/>
+
+    <EditText
+        android:id="@+id/regCountry"
+        android:hint="Country"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"/>

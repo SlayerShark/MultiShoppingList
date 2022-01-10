@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.multishoppinglist.databinding.ActivityMainBinding
 import com.example.multishoppinglist.fragments.OfflineFragment
 import com.example.multishoppinglist.fragments.OnlineFragment
 import com.example.multishoppinglist.fragments.ProfileFragment
@@ -18,6 +19,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth;
 
     private val offlineFragment = OfflineFragment()
@@ -26,7 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
 
         auth = Firebase.auth
 
@@ -37,22 +41,16 @@ class MainActivity : AppCompatActivity() {
         setCurrentFragment(offlineFragment)
 
 
-        //for navigating fragments from the bottom navigation bar
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_nav_bar)
-
-        bottomNavigationView.setOnNavigationItemSelectedListener {
+        binding.bottomNavBar.setOnNavigationItemSelectedListener {
             when(it.itemId) {
                 R.id.nav_offline -> {
                     setCurrentFragment(offlineFragment)
-                    Toast.makeText(applicationContext, "this is offline", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_online -> {
                     setCurrentFragment(onlineFragment)
-                    Toast.makeText(applicationContext, "this is online", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_profile -> {
                     setCurrentFragment(profileFragment)
-                    Toast.makeText(applicationContext, "this is profile", Toast.LENGTH_SHORT).show()
                 }
             }
             true
@@ -87,20 +85,21 @@ class MainActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
+            println("1")
+        }
 
-
-        } else {
-            //if no user, go to login
+        else{
             val intent = Intent(this, LoginActivity::class.java)
             this.startActivity(intent)
             finish()
+
         }
     }
 
 
 
 
-
+ 
     fun logout() {
         FirebaseAuth.getInstance().signOut()
         startActivity(Intent(this@MainActivity, LoginActivity::class.java))

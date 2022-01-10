@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import com.example.multishoppinglist.MainActivity
 import com.example.multishoppinglist.model.User
 import com.example.multishoppinglist.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -42,10 +44,11 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            val email = binding.regEmail.text.toString()
-            val password = binding.regPassword.text.toString()
-            val name = binding.regName.text.toString()
-            val country = binding.regCountry.text.toString()
+            val email       = binding.regEmail.text.toString().trim()
+            val password    = binding.regPassword.text.toString().trim()
+            val name        = binding.regName.text.toString().trim()
+            val country     = binding.regCountry.text.toString().trim()
+            val phone       = binding.regPhone.text.toString().trim()
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
@@ -53,26 +56,31 @@ class RegisterFragment : Fragment() {
                         //to store user all data
                         database = FirebaseDatabase.getInstance().getReference("Users")
                         val id = auth.currentUser?.uid
-                        val user = User(id, name, email, country)
+                        val user = User(id, name, email, country, phone)
                         if (id != null) {
-                            database.child(id).setValue(user)
+                            database.child(id).setValue(user).addOnSuccessListener {
+                                auth.signInWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(requireActivity()) { task ->
+                                        if (task.isSuccessful) {
+                                            auth.currentUser
+                                            Toast.makeText(context, "User Registered and Logged In Successfully", Toast.LENGTH_SHORT).show()
+                                            activity?.let {
+                                                val intent = Intent(it, MainActivity::class.java)
+                                                it.startActivity(intent)
+                                            }
+                                        } else {
+                                            Toast.makeText(context, "User Registration Failed", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                            }
                         }
                         //clear text fields
                         binding.regEmail.text.clear()
                         binding.regPassword.text.clear()
                         binding.regName.text.clear()
                         binding.regCountry.text.clear()
-
-                        Toast.makeText(requireContext(), "successfully register", Toast.LENGTH_SHORT).show()
-                        println("createUserWithEmail:success")
-                        fragmentManager?.popBackStack("logfrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
-                    } else {
-                        Toast.makeText(requireContext(), task.exception!!.message.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        println("Authentication failed.")
-
+                        binding.regPhone.text.clear()
                     }
                 }
             }

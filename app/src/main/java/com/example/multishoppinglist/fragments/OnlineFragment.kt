@@ -36,6 +36,8 @@ class OnlineFragment : Fragment() {
 
         binding.createGroupDialog.setOnClickListener { createGroup() }
 
+        binding.joinGroupDialog.setOnClickListener { joinGroup() }
+
         return binding.root
     }
 
@@ -65,6 +67,35 @@ class OnlineFragment : Fragment() {
 
         val dialog = alertDialog.create()
         dialog.show()
-
     }
+
+    private fun joinGroup() {
+        val inflater = layoutInflater
+        val binding: DialogAddGroupBinding = DialogAddGroupBinding.inflate(inflater)
+
+        binding.addGroupTitle.hint = "Invite Code"
+        val alertDialog = AlertDialog.Builder(requireActivity())
+        alertDialog.setTitle("Join Group")
+        alertDialog.setView(binding.root)
+        alertDialog.setCancelable(false)
+
+        alertDialog.setNegativeButton("Cancel"){ dialog, which ->
+            Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
+        }
+        alertDialog.setPositiveButton("Join"){ dialog, which ->
+            val groupName = binding.addGroupTitle.text.toString()
+
+//            database = FirebaseDatabase.getInstance().getReference("Group")
+//            val id = database.push().key        //to auto generate id
+//            val createdBy = auth.currentUser?.email
+//            val group = Group(id, groupName, createdBy)
+//            database.child(id!!).setValue(group)
+
+            Toast.makeText(context, "Group Name: $groupName", Toast.LENGTH_LONG).show()
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.multishoppinglist.fragments
 
 import android.os.Bundle
+import android.renderscript.Sampler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,22 +9,32 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multishoppinglist.ShAdapter
 import com.example.multishoppinglist.databinding.DialogAddGroupBinding
 import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentOfflineBinding
 import com.example.multishoppinglist.model.Group
 import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 
 class OfflineFragment : Fragment() {
     private lateinit var binding: FragmentOfflineBinding
     private lateinit var database: DatabaseReference
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var itemArrayList: ArrayList<Item>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val user = Firebase.auth.currentUser
+        user?.let {
+            val id : String = user.uid
+            readData(id)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -32,16 +43,42 @@ class OfflineFragment : Fragment() {
         binding = FragmentOfflineBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Shopping List = Local")
 
-        val user = Firebase.auth.currentUser
-        user?.let {
-//            val email = user.email
-            val id : String = user.uid
-            readData(id)
-        }
-
         binding.addItemDialog.setOnClickListener{ addItem() }
 
+        recyclerView = binding.offlineRecycler
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+
+        itemArrayList = arrayListOf<Item>()
+        getItemData()
+
+
         return binding.root
+    }
+
+    private fun getItemData() {
+        database = FirebaseDatabase.getInstance().getReference("Items")
+        database.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    for (itemSnapshot in snapshot.children){
+                        val item = itemSnapshot.getValue(Item::class.java)
+                        val userId = item?.user_id
+                        //condition to display only the logged in users' information
+                        if (userId == Firebase.auth.currentUser?.uid){
+                            itemArrayList.add(item!!)
+                        }
+
+                    }
+                    recyclerView.adapter = ShAdapter(itemArrayList)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     private fun addItem() {
@@ -58,20 +95,19 @@ class OfflineFragment : Fragment() {
         }
         alertDialog.setPositiveButton("Add"){ dialog, which ->
             val itemName = binding.addTitle.text.toString()
+            val itemDescription = binding.addDescription.text.toString()
             val itemQuantity = binding.addQuantity.text.toString()
             val id = database.push().key        //to auto generate id
             val userId = Firebase.auth.currentUser?.uid
 
             database = FirebaseDatabase.getInstance().getReference("Items")
-            val item = Item(id, userId, itemName, itemQuantity)
+            val item = Item(id, userId, itemName, itemDescription, itemQuantity)
             database.child(id!!).setValue(item)
 
             Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
         }
 
-        val dialog = alertDialog.create()
-        dialog.show()
-
+        alertDialog.create().show()
     }
 
 

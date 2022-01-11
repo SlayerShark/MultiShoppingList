@@ -1,6 +1,7 @@
 package com.example.multishoppinglist.fragments
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,11 @@ import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.nio.file.Files.exists
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NoGroupFragment : Fragment() {
     private lateinit var binding: FragmentNoGroupBinding
@@ -63,7 +68,7 @@ class NoGroupFragment : Fragment() {
     }
 
     private fun getGroupData() {
-        database = FirebaseDatabase.getInstance().getReference("Group")
+        database = FirebaseDatabase.getInstance().getReference("Groups")
         database.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
@@ -97,17 +102,46 @@ class NoGroupFragment : Fragment() {
         alertDialog.setPositiveButton("Create") { dialog, which ->
             val groupName = binding.addGroupTitle.text.toString()
 
-            database = FirebaseDatabase.getInstance().getReference("Group")
+            database = FirebaseDatabase.getInstance().getReference("Groups" +
+                    "")
             val id = database.push().key        //to auto generate id
             val createdBy = auth.currentUser?.email
             val group = Group(id, groupName, createdBy)
-            database.child(id!!).setValue(group).addOnSuccessListener {
-//                val fr = fragmentManager?.beginTransaction()
-//                fr?.replace(R.id.groupFragmentContainer, GroupFragment())
-//                fr?.commit()
-                Toast.makeText(context, "group created : $groupName", Toast.LENGTH_SHORT).show()
 
-            }
+            //check if the groupName is already in the database
+/*
+            database.addValueEventListener(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (itemSnapshot in snapshot.children) {
+                            val item = itemSnapshot.getValue(Group::class.java)
+                            val group_title = item?.group_name
+
+                            if (groupName != group_title) {
+*/
+                                database.child(groupName!!).setValue(group).addOnSuccessListener {
+                                    Toast.makeText(
+                                        context,
+                                        "group created : $groupName",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+/*                            }
+                            else{
+                                Toast.makeText(context, "group already exists", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })*/
+
+
+
         }
 
         val dialog = alertDialog.create()

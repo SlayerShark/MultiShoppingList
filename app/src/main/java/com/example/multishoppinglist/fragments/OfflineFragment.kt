@@ -1,7 +1,6 @@
 package com.example.multishoppinglist.fragments
 
 import android.os.Bundle
-import android.renderscript.Sampler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.multishoppinglist.ShAdapter
-import com.example.multishoppinglist.databinding.DialogAddGroupBinding
+import com.example.multishoppinglist.adapter.ShAdapter
 import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentOfflineBinding
-import com.example.multishoppinglist.model.Group
 import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -52,7 +49,6 @@ class OfflineFragment : Fragment() {
         itemArrayList = arrayListOf<Item>()
         getItemData()
 
-
         return binding.root
     }
 
@@ -61,23 +57,23 @@ class OfflineFragment : Fragment() {
         database.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
+                    itemArrayList.clear()   //to clear recyclerView before adding item to prevent double data in the recyclerView
                     for (itemSnapshot in snapshot.children){
                         val item = itemSnapshot.getValue(Item::class.java)
                         val userId = item?.user_id
                         //condition to display only the logged in users' information
                         if (userId == Firebase.auth.currentUser?.uid){
-                            itemArrayList.add(item!!)
+                            if (item != null) {
+                                itemArrayList.add(item)
+                            }
                         }
-
                     }
                     recyclerView.adapter = ShAdapter(itemArrayList)
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
         })
     }
 

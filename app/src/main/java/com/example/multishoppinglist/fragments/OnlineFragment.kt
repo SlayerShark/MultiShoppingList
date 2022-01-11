@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import com.example.multishoppinglist.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,82 +22,38 @@ import com.google.firebase.database.FirebaseDatabase
 class OnlineFragment : Fragment() {
     private lateinit var binding: FragmentOnlineBinding
     private lateinit var database: DatabaseReference
-
     private lateinit var auth: FirebaseAuth;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle("Shopping List - Online")
+
+/*
+        database = FirebaseDatabase.getInstance().getReference("Group")
+        database.child("id").get()
+        Toast.makeText(context, "id: $id", Toast.LENGTH_LONG).show()
+*/
+
+        //go to another fragment from fragment
+        val fr = fragmentManager?.beginTransaction()
+        fr?.replace(R.id.onlineMainFragment, NoGroupFragment())?.addToBackStack("logfrag")
+        fr?.commit()
+
+
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         binding = FragmentOnlineBinding.inflate(inflater, container, false)
 
-        binding.createGroupDialog.setOnClickListener { createGroup() }
 
-        binding.joinGroupDialog.setOnClickListener { joinGroup() }
 
         return binding.root
     }
 
-    private fun createGroup() {
-        val inflater = layoutInflater
-        val binding: DialogAddGroupBinding = DialogAddGroupBinding.inflate(inflater)
-
-        val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle("Create New Group")
-        alertDialog.setView(binding.root)
-        alertDialog.setCancelable(false)
-
-        alertDialog.setNegativeButton("Cancel"){ dialog, which ->
-            Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
-        }
-        alertDialog.setPositiveButton("Create"){ dialog, which ->
-            val groupName = binding.addGroupTitle.text.toString()
-
-            database = FirebaseDatabase.getInstance().getReference("Group")
-            val id = database.push().key        //to auto generate id
-            val createdBy = auth.currentUser?.email
-            val group = Group(id, groupName, createdBy)
-            database.child(id!!).setValue(group)
-
-            Toast.makeText(context, "Group Name: $groupName", Toast.LENGTH_LONG).show()
-        }
-
-        val dialog = alertDialog.create()
-        dialog.show()
-    }
-
-    private fun joinGroup() {
-        val inflater = layoutInflater
-        val binding: DialogAddGroupBinding = DialogAddGroupBinding.inflate(inflater)
-
-        binding.addGroupTitle.hint = "Invite Code"
-        val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle("Join Group")
-        alertDialog.setView(binding.root)
-        alertDialog.setCancelable(false)
-
-        alertDialog.setNegativeButton("Cancel"){ dialog, which ->
-            Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
-        }
-        alertDialog.setPositiveButton("Join"){ dialog, which ->
-            val groupName = binding.addGroupTitle.text.toString()
-
-//            database = FirebaseDatabase.getInstance().getReference("Group")
-//            val id = database.push().key        //to auto generate id
-//            val createdBy = auth.currentUser?.email
-//            val group = Group(id, groupName, createdBy)
-//            database.child(id!!).setValue(group)
-
-            Toast.makeText(context, "Group Name: $groupName", Toast.LENGTH_LONG).show()
-        }
-
-        val dialog = alertDialog.create()
-        dialog.show()
-    }
 
 }

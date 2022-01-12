@@ -54,9 +54,6 @@ class NoGroupFragment : Fragment() {
         binding.createGroupDialog.setOnClickListener { createGroup() }
         binding.joinGroupDialog.setOnClickListener { joinGroup() }
 
-//        groupArrayList = ArrayList()
-//        adapter = GroupAdapter(this.context, groupArrayList)
-
         recyclerView = binding.groupRecycler
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
@@ -106,15 +103,17 @@ class NoGroupFragment : Fragment() {
         alertDialog.setPositiveButton("Create") { dialog, which ->
             val groupName = binding.addGroupTitle.text.toString()
 
-//            database = FirebaseDatabase.getInstance().getReference("Groups")
+            database = FirebaseDatabase.getInstance().getReference("Groups")
 
             //check if the groupName is already in the database
-            database.addValueEventListener(object: ValueEventListener{
+            database.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.child(groupName).exists()) {
-                        Toast.makeText(context, "group already exists", Toast.LENGTH_SHORT).show()
+                    if (snapshot.hasChild(groupName)) {
+                        println("exists")
+                        Toast.makeText(context, "group already exists", Toast.LENGTH_LONG).show()
                     }
                     else {
+                        println("created")
                         val id          = database.push().key        //to auto generate id
                         val createdBy   = auth.currentUser?.email
 
@@ -128,6 +127,8 @@ class NoGroupFragment : Fragment() {
                             ).show()
                         }
                     }
+
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {

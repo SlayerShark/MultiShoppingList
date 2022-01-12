@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.adapter.ShAdapter
 import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentOfflineBinding
+import com.example.multishoppinglist.databinding.ShItemBinding
 import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -47,12 +49,20 @@ class OfflineFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
 
         itemArrayList = arrayListOf<Item>()
+
+
         getItemData()
+
 
         return binding.root
     }
 
     private fun getItemData() {
+        val progDialog = ProgressDialog(context)
+
+        progDialog.setMessage("loading")
+        progDialog.show()
+
         database = FirebaseDatabase.getInstance().getReference("Items")
         database.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -69,6 +79,8 @@ class OfflineFragment : Fragment() {
                         }
                     }
                     recyclerView.adapter = ShAdapter(itemArrayList)
+                    progDialog.dismiss()
+
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -114,7 +126,6 @@ class OfflineFragment : Fragment() {
             val name = it.child("name").value
             binding.hello.setText("Welcome, "+name.toString())
         }
-
-
     }
+
 }

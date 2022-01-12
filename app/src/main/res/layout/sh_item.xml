@@ -30,11 +30,22 @@
                 tools:text="Title" />
 
             <ImageView
-                android:id="@+id/options"
+                android:id="@+id/shOption"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:background="@drawable/more"
-                android:backgroundTint="@color/purple_700"/>
+                android:backgroundTint="@color/purple_700" />
+
+<!--
+            <TextView
+                android:id="@+id/shOption"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="&#8942;"
+                android:textStyle="bold"
+                android:textColor="@color/purple_700"/>
+-->
 
         </LinearLayout>
 

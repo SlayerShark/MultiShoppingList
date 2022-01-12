@@ -40,7 +40,6 @@ class ProfileFragment : Fragment() {
             binding.proEmail.setText(email.toString())
             binding.proPhone.setText(phone.toString())
         }
-
         return binding.root
     }
 }

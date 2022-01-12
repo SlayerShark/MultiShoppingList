@@ -75,7 +75,11 @@ class NoGroupFragment : Fragment() {
                     groupArrayList.clear()   //to clear recyclerView before adding item to prevent double data in the recyclerView
                     for (groupSnapShot in snapshot.children){
                         val groupItem = groupSnapShot.getValue(Group::class.java)
+
+                        val createdBy = groupItem?.created_by
+                        if (createdBy == Firebase.auth.currentUser?.email) {
                             groupArrayList.add(groupItem!!)
+                        }
                     }
                     recyclerView.adapter = GroupAdapter(groupArrayList)
                 }
@@ -102,34 +106,26 @@ class NoGroupFragment : Fragment() {
         alertDialog.setPositiveButton("Create") { dialog, which ->
             val groupName = binding.addGroupTitle.text.toString()
 
-            database = FirebaseDatabase.getInstance().getReference("Groups" +
-                    "")
-            val id = database.push().key        //to auto generate id
-            val createdBy = auth.currentUser?.email
-            val group = Group(id, groupName, createdBy)
+//            database = FirebaseDatabase.getInstance().getReference("Groups")
 
             //check if the groupName is already in the database
-/*
             database.addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (itemSnapshot in snapshot.children) {
-                            val item = itemSnapshot.getValue(Group::class.java)
-                            val group_title = item?.group_name
+                    if (snapshot.child(groupName).exists()) {
+                        Toast.makeText(context, "group already exists", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        val id          = database.push().key        //to auto generate id
+                        val createdBy   = auth.currentUser?.email
 
-                            if (groupName != group_title) {
-*/
-                                database.child(groupName!!).setValue(group).addOnSuccessListener {
-                                    Toast.makeText(
-                                        context,
-                                        "group created : $groupName",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-/*                            }
-                            else{
-                                Toast.makeText(context, "group already exists", Toast.LENGTH_SHORT).show()
-                            }
+                        val group = Group(id, groupName, createdBy)
+
+                        database.child(groupName!!).setValue(group).addOnSuccessListener {
+                            Toast.makeText(
+                                context,
+                                "group created : $groupName",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -138,7 +134,7 @@ class NoGroupFragment : Fragment() {
                     TODO("Not yet implemented")
                 }
 
-            })*/
+            })
 
 
 

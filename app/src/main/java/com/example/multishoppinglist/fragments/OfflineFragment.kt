@@ -61,6 +61,8 @@ class OfflineFragment : Fragment() {
         val progDialog = ProgressDialog(context)
 
         progDialog.setMessage("loading")
+        progDialog.setCanceledOnTouchOutside(false)
+        progDialog.setCancelable(false)
         progDialog.show()
 
         database = FirebaseDatabase.getInstance().getReference("Items")

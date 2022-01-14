@@ -11,11 +11,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.R
 import com.example.multishoppinglist.databinding.ShItemBinding
+import com.example.multishoppinglist.model.Group
 import com.example.multishoppinglist.model.Item
+import com.google.firebase.database.*
 
 class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<ShAdapter.MyViewHolder>() {
 
     private lateinit var binding: ShItemBinding
+    private lateinit var database: DatabaseReference
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,19 +35,27 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
         holder.itemQuantity.text = currentItem.item_quantity
 
         holder.option.setOnClickListener {
-            Toast.makeText(it.context, "click click", Toast.LENGTH_SHORT).show()
-
             val popupMenu: PopupMenu = PopupMenu(it.context, holder.option)
             popupMenu.menuInflater.inflate(R.menu.option_item, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
                 override fun onMenuItemClick(p0: MenuItem?): Boolean {
                     when (p0!!.itemId) {
-                        R.id.delItem -> Toast.makeText(
-                            it.context,
-                            "delete clicked",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        R.id.delItem -> {
+                            database = FirebaseDatabase.getInstance().getReference("Items")
+                            database.addListenerForSingleValueEvent(object : ValueEventListener{
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    snapshot.child(currentItem.id.toString()).ref.removeValue()
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
+                            Toast.makeText(it.context,"delete clicked", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     return true
                 }

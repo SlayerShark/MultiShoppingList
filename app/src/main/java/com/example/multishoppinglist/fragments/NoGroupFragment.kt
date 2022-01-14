@@ -108,11 +108,14 @@ class NoGroupFragment : Fragment() {
             //check if the groupName is already in the database
             database.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.hasChild(groupName)) {
+                    val groupItem = snapshot.getValue(Group::class.java)
+                    val created_By = groupItem?.created_by.toString()
+
+                    if (snapshot.hasChild(groupName) && Firebase.auth.currentUser?.email.toString() == created_By) {
                         println("exists")
                         Toast.makeText(context, "group already exists", Toast.LENGTH_LONG).show()
                     }
-                    else {
+                    else{
                         println("created")
                         val id          = database.push().key        //to auto generate id
                         val createdBy   = auth.currentUser?.email

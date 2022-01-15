@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.R
 import com.example.multishoppinglist.databinding.GroupListBinding
 import com.example.multishoppinglist.model.Group
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class GroupAdapter(private val groupList : ArrayList<Group>) : RecyclerView.Adapter<GroupAdapter.groupViewHolder>() {
 
@@ -16,7 +19,7 @@ class GroupAdapter(private val groupList : ArrayList<Group>) : RecyclerView.Adap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): groupViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding:GroupListBinding = GroupListBinding.inflate(inflater)
+        binding = GroupListBinding.inflate(inflater)
         return groupViewHolder(binding.root)
     }
 

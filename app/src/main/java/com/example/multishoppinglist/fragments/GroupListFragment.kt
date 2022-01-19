@@ -1,42 +1,33 @@
 package com.example.multishoppinglist.fragments
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.multishoppinglist.R
-import com.example.multishoppinglist.adapter.GroupAdapter
-import com.example.multishoppinglist.adapter.ShAdapter
+import com.example.multishoppinglist.adapter.GroupListAdapter
 import com.example.multishoppinglist.databinding.DialogAddGroupBinding
 import com.example.multishoppinglist.databinding.FragmentNoGroupBinding
-import com.example.multishoppinglist.databinding.FragmentOnlineBinding
 import com.example.multishoppinglist.model.Group
-import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.nio.file.Files.exists
-import java.util.*
 import kotlin.collections.ArrayList
 
-class NoGroupFragment : Fragment() {
+class GroupListFragment : Fragment() {
     private lateinit var binding: FragmentNoGroupBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth;
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var groupArrayList: ArrayList<Group>
-    private lateinit var adapter: GroupAdapter
+    private lateinit var listAdapter: GroupListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +71,7 @@ class NoGroupFragment : Fragment() {
 
                         groupArrayList.add(groupItem!!)
                     }
-                    recyclerView.adapter = GroupAdapter(groupArrayList)
+                    recyclerView.adapter = GroupListAdapter(groupArrayList)
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -110,8 +101,7 @@ class NoGroupFragment : Fragment() {
             //check if the groupName is already in the database
             database.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val groupItem = snapshot.getValue(Group::class.java)
-                    val created_By = groupItem?.created_by.toString()
+//                    val groupItem = snapshot.getValue(Group::class.java)
 
                     val email   = auth.currentUser?.email
                     val data= email?.split(".")

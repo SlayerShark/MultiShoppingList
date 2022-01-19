@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -60,6 +61,12 @@ class GroupListFragment : Fragment() {
         val data= email?.split(".")
         val eml = data?.get(0).toString()
 
+        val progDial = ProgressDialog(context)
+        progDial.setMessage("loading...")
+        progDial.setCancelable(false)
+        progDial.setCanceledOnTouchOutside(false)
+        progDial.show()
+
         database = FirebaseDatabase.getInstance().getReference("Groups").child(eml)
         database.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -73,6 +80,7 @@ class GroupListFragment : Fragment() {
                     }
                     recyclerView.adapter = GroupListAdapter(groupArrayList)
                 }
+                progDial.dismiss()
             }
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
@@ -101,22 +109,15 @@ class GroupListFragment : Fragment() {
             //check if the groupName is already in the database
             database.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-//                    val groupItem = snapshot.getValue(Group::class.java)
-
                     val email   = auth.currentUser?.email
                     val data= email?.split(".")
                     val eml = data?.get(0)
 
                     if (snapshot.child(eml.toString()).child(groupName!!).exists()) {
-                        println("exists")
                         Toast.makeText(context, "group already exists", Toast.LENGTH_LONG).show()
                     }
                     else{
-                        println("created")
-                        val id      = database.push().key        //to auto generate id
-
                         val group = Group(email,groupName, "admin")
-//
                         database.child(eml.toString()).child(groupName!!).setValue(group).addOnSuccessListener {
                             Toast.makeText(
                                 context,

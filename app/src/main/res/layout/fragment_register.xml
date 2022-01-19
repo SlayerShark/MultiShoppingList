@@ -12,21 +12,24 @@
         android:hint="Full Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:inputType="textPersonName"/>
 
     <EditText
         android:id="@+id/regEmail"
         android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:inputType="textEmailAddress"/>
 
     <EditText
         android:id="@+id/regPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:hint="Phone"/>
+        android:hint="Phone"
+        android:inputType="phone"/>
 
     <EditText
         android:id="@+id/regCountry"

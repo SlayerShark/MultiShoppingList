@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -57,6 +58,10 @@ class LoginFragment : Fragment() {
             val email = binding.loginEmail.text.toString().trim()
             val password = binding.loginPassword.text.toString().trim()
 
+            val progDialog = ProgressDialog(context)
+            progDialog.setMessage("Logging In...")
+            progDialog.show()
+
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
@@ -67,7 +72,7 @@ class LoginFragment : Fragment() {
                             val intent = Intent(it, MainActivity::class.java)
                             it.startActivity(intent)
                         }
-//                        ProgressDialog(context).dismiss()
+                        progDialog.dismiss()
                     } else {
                         Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                     }

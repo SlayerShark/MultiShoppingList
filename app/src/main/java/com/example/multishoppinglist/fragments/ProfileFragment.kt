@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,6 +29,12 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val progDial = ProgressDialog(context)
+        progDial.setMessage("loading...")
+        progDial.setCancelable(false)
+        progDial.setCanceledOnTouchOutside(false)
+        progDial.show()
+
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         database = FirebaseDatabase.getInstance().getReference("Users")
         val id = Firebase.auth.uid
@@ -39,7 +46,10 @@ class ProfileFragment : Fragment() {
             binding.proName.setText(name.toString())
             binding.proEmail.setText(email.toString())
             binding.proPhone.setText(phone.toString())
+
+            progDial.dismiss()
         }
+
         return binding.root
     }
 }

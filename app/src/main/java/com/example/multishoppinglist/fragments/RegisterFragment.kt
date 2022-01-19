@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.fragments
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -50,6 +51,12 @@ class RegisterFragment : Fragment() {
             val country     = binding.regCountry.text.toString().trim()
             val phone       = binding.regPhone.text.toString().trim()
 
+            val progDial = ProgressDialog(context)
+            progDial.setMessage("Registering User...")
+            progDial.setCancelable(false)
+            progDial.setCanceledOnTouchOutside(false)
+            progDial.show()
+
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
@@ -58,10 +65,17 @@ class RegisterFragment : Fragment() {
                         val id = auth.currentUser?.uid
                         val user = User(id, name, email, country, phone)
                         if (id != null) {
+                            progDial.setMessage("Logging In...")
+                            progDial.setCancelable(false)
+                            progDial.setCanceledOnTouchOutside(false)
+                            progDial.show()
+
                             database.child(id).setValue(user).addOnSuccessListener {
                                 auth.signInWithEmailAndPassword(email, password)
                                     .addOnCompleteListener(requireActivity()) { task ->
                                         if (task.isSuccessful) {
+                                            progDial.dismiss()
+
                                             auth.currentUser
                                             Toast.makeText(context, "User Registered and Logged In Successfully", Toast.LENGTH_SHORT).show()
                                             activity?.let {

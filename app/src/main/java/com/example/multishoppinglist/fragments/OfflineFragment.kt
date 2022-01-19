@@ -60,26 +60,28 @@ class OfflineFragment : Fragment() {
     private fun getItemData() {
         val progDialog = ProgressDialog(context)
 
-        progDialog.setMessage("loading")
-        progDialog.setCanceledOnTouchOutside(false)
-        progDialog.setCancelable(false)
-        progDialog.show()
-
         database = FirebaseDatabase.getInstance().getReference("Items")
         database.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
                     itemArrayList.clear()   //to clear recyclerView before adding item to prevent double data in the recyclerView
+
                     for (itemSnapshot in snapshot.children){
                         val item = itemSnapshot.getValue(Item::class.java)
                         val userId = item?.user_id
                         //condition to display only the logged in users' information
                         if (userId == Firebase.auth.currentUser?.uid){
+                            progDialog.setMessage("loading")
+                            progDialog.setCanceledOnTouchOutside(false)
+                            progDialog.setCancelable(false)
+                            progDialog.show()
+
                             if (item != null) {
                                 itemArrayList.add(item)
                             }
                         }
                     }
+
                     recyclerView.adapter = ShAdapter(itemArrayList)
                     progDialog.dismiss()
 

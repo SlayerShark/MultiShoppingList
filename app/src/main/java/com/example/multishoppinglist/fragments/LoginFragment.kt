@@ -74,6 +74,7 @@ class LoginFragment : Fragment() {
                         }
                         progDialog.dismiss()
                     } else {
+                        progDialog.dismiss()
                         Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                     }
                 }

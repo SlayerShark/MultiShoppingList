@@ -22,7 +22,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: ShItemBinding = ShItemBinding.inflate(inflater)
+        binding = ShItemBinding.inflate(inflater)
 
         return MyViewHolder(binding.root)
     }

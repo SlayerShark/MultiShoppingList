@@ -50,7 +50,6 @@ class OfflineFragment : Fragment() {
 
         itemArrayList = arrayListOf<Item>()
 
-
         getItemData()
 
 
@@ -68,8 +67,8 @@ class OfflineFragment : Fragment() {
 
                     for (itemSnapshot in snapshot.children){
                         val item = itemSnapshot.getValue(Item::class.java)
-                        val userId = item?.user_id
                         //condition to display only the logged in users' information
+                        val userId = item?.user_id
                         if (userId == Firebase.auth.currentUser?.uid){
                             progDialog.setMessage("loading")
                             progDialog.setCanceledOnTouchOutside(false)

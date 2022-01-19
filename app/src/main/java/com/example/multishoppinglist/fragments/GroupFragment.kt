@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.multishoppinglist.adapter.GroupAdapter
 import com.example.multishoppinglist.databinding.DialogAddGroupBinding
 import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentGroupBinding
@@ -23,6 +26,8 @@ class GroupFragment : Fragment() {
     private lateinit var binding: FragmentGroupBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var groupArrayList: ArrayList<GroupItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +41,45 @@ class GroupFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentGroupBinding.inflate(inflater, container, false)
 
-        binding.addItemDialog.setOnClickListener { addItem() }
+        binding.addItemDialog.setOnClickListener { addGroupItem() }
         binding.invite.setOnClickListener { invite() }
 
+        recyclerView = binding.groupRecycler
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+
+        groupArrayList = arrayListOf<GroupItem>()
+
+        getGroupItemList()
+
         return binding.root
+    }
+
+    private fun getGroupItemList() {
+        val arg = this.arguments
+        val groupName = arg?.get("grp_name").toString()
+
+        database = FirebaseDatabase.getInstance().getReference("GroupItems").child(groupName)
+        database.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    groupArrayList.clear()
+
+                    for (groupItemSnapshot in snapshot.children) {
+                        val groupItem = groupItemSnapshot.getValue(GroupItem::class.java)
+
+                        groupArrayList.add(groupItem!!)
+                    }
+                    recyclerView.adapter = GroupAdapter(groupArrayList)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
     }
 
     private fun invite() {
@@ -96,13 +136,12 @@ class GroupFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addItem() {
+    private fun addGroupItem() {
         val inflater = layoutInflater
         val binding:DialogAddItemBinding = DialogAddItemBinding.inflate(inflater)
 
         val arg = this.arguments
         val group_name = arg?.get("grp_name").toString()
-        println("group name: "+group_name)
 
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle("Add New Item")
@@ -117,12 +156,11 @@ class GroupFragment : Fragment() {
             val itemDescription = binding.addDescription.text.toString()
             val itemQuantity = binding.addQuantity.text.toString()
             val userId = Firebase.auth.currentUser?.uid
-            val groupName = group_name.toString()
 
             database = FirebaseDatabase.getInstance().getReference("GroupItems")
             val itemId = database.push().key        //to auto generate id
-            val grpItem = GroupItem(itemId, userId, itemName, itemDescription, itemQuantity, groupName)
-            database.child(itemId!!).setValue(grpItem).addOnSuccessListener {
+            val grpItem = GroupItem(itemId, userId, itemName, itemDescription, itemQuantity, group_name)
+            database.child(group_name).child(itemId!!).setValue(grpItem).addOnSuccessListener {
                 Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
             }
 

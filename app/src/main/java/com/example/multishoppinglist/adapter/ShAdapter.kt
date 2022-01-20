@@ -1,13 +1,11 @@
 package com.example.multishoppinglist.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.R
 import com.example.multishoppinglist.databinding.ShItemBinding
@@ -30,7 +28,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = itemList[position]
 
-        holder.itemName.text = currentItem.item_name
+        holder.itemName.text = currentItem.item_name?.capitalize() ?: toString()
         holder.itemDescription.text = currentItem.item_description
         holder.itemQuantity.text = currentItem.item_quantity
 
@@ -62,7 +60,22 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
             })
             popupMenu.show()
         }
+
+/*
+        holder.switch.setOnClickListener {
+            if (!holder.switch.isChecked)
+                Toast.makeText(it.context, currentItem.item_name, Toast.LENGTH_SHORT).show()
+        }
+*/
+//        holder.switch.isSelected = currentItem.equals(currentItem.item_checked)
+
+
+
+
+
+
     }
+
 
     override fun getItemCount(): Int {
         return itemList.size
@@ -74,6 +87,8 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
         val itemQuantity : TextView = itemView.findViewById(R.id.itemQuantity)
 
         val option : ImageView = itemView.findViewById(R.id.shOption)
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        val switch : Switch    = itemView.findViewById(R.id.itemSwitch)
     }
 
 }

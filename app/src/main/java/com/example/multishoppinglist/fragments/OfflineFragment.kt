@@ -110,7 +110,7 @@ class OfflineFragment : Fragment() {
             val userId = Firebase.auth.currentUser?.uid
 
             database = FirebaseDatabase.getInstance().getReference("Items")
-            val item = Item(id, userId, itemName, itemDescription, itemQuantity)
+            val item = Item(id, userId, itemName, itemDescription, itemQuantity, true)
             database.child(id!!).setValue(item)
 
             Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()

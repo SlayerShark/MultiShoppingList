@@ -52,12 +52,15 @@ class OfflineFragment : Fragment() {
 
         getItemData()
 
-
         return binding.root
     }
 
     private fun getItemData() {
         val progDialog = ProgressDialog(context)
+//        progDialog.setMessage("loading")
+//        progDialog.setCanceledOnTouchOutside(false)
+//        progDialog.setCancelable(false)
+//        progDialog.show()
 
         database = FirebaseDatabase.getInstance().getReference("Items")
         database.addValueEventListener(object: ValueEventListener{
@@ -70,11 +73,6 @@ class OfflineFragment : Fragment() {
                         //condition to display only the logged in users' information
                         val userId = item?.user_id
                         if (userId == Firebase.auth.currentUser?.uid){
-                            progDialog.setMessage("loading")
-                            progDialog.setCanceledOnTouchOutside(false)
-                            progDialog.setCancelable(false)
-                            progDialog.show()
-
                             if (item != null) {
                                 itemArrayList.add(item)
                             }

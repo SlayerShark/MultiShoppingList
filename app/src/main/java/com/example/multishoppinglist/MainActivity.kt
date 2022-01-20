@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            println("1")
+            Toast.makeText(this, "User Logged In", Toast.LENGTH_SHORT).show()
         }
 
         else{

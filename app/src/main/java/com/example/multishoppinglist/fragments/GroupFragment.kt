@@ -13,10 +13,8 @@ import com.example.multishoppinglist.adapter.GroupAdapter
 import com.example.multishoppinglist.databinding.DialogAddGroupBinding
 import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.FragmentGroupBinding
-import com.example.multishoppinglist.model.Group
 import com.example.multishoppinglist.model.GroupItem
 import com.example.multishoppinglist.model.Invite
-import com.example.multishoppinglist.model.Item
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -40,6 +38,10 @@ class GroupFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentGroupBinding.inflate(inflater, container, false)
+
+        val arg = this.arguments
+        val groupName = arg?.get("grp_name").toString()
+        binding.groupTitle.text = groupName
 
         binding.addItemDialog.setOnClickListener { addGroupItem() }
         binding.invite.setOnClickListener { invite() }
@@ -77,7 +79,6 @@ class GroupFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
         })
 
     }

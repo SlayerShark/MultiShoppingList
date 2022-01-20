@@ -31,8 +31,6 @@ class GroupListAdapter(private val groupList : ArrayList<Group>) : RecyclerView.
         holder.groupName.text = groupItem.group_name
 
         holder.itemView.setOnClickListener{
-            Toast.makeText(it.context, "fragment: ${groupItem.group_name}", Toast.LENGTH_SHORT).show()
-
             //to send data from GroupListFragment to GroupFragment
             val bundle = Bundle()
             bundle.putString("grp_name", groupItem.group_name)

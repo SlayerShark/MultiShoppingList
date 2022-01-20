@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/nav_offline"
-        android:title="Offline"
+        android:title="Personal"
         android:icon="@drawable/ic_offline"/>
 
     <item
         android:id="@+id/nav_online"
-        android:title="Online"
+        android:title="Group"
         android:icon="@drawable/ic_online"/>
 
     <item

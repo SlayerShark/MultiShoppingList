@@ -47,12 +47,15 @@ class LoginFragment : Fragment() {
         }
 
         //didn't worked on textView. so, button
+        //for future updates
+/*
         binding.noUserLogin.setOnClickListener {
             activity?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 it.startActivity(intent)
             }
         }
+*/
 
         binding.btnLogin.setOnClickListener {
             val email = binding.loginEmail.text.toString().trim()
@@ -71,6 +74,7 @@ class LoginFragment : Fragment() {
                         activity?.let {
                             val intent = Intent(it, MainActivity::class.java)
                             it.startActivity(intent)
+                            it.finish()
                         }
                         progDialog.dismiss()
                     } else {

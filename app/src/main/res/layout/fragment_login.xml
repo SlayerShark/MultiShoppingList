@@ -41,6 +41,7 @@
         android:text="New user? Click here to Register"
         android:textAlignment="center" />
 
+<!-- for future updates
     <androidx.constraintlayout.utils.widget.MotionButton
         android:id="@+id/noUserLogin"
         android:layout_width="match_parent"
@@ -50,5 +51,6 @@
         android:text="Continue without Registering"
         android:textAlignment="center"
         android:textAllCaps="false" />
+-->
 
 </RelativeLayout>

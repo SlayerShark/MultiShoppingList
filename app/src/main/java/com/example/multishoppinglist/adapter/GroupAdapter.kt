@@ -1,5 +1,6 @@
 package com.example.multishoppinglist.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.R
 import com.example.multishoppinglist.databinding.ShGroupItemBinding
+import com.example.multishoppinglist.fragments.GroupFragment
 import com.example.multishoppinglist.model.GroupItem
 import com.google.firebase.database.*
 
@@ -28,13 +30,13 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
     override fun onBindViewHolder(holder: groupViewHolder, position: Int) {
         val currentGroupItem = groupItemList[position]
 
-        holder.itemName.text        = currentGroupItem.item_name
+        holder.itemName.text        = currentGroupItem.item_name?.capitalize() ?: String()
         holder.itemDescription.text = currentGroupItem.item_description
         holder.itemQuantity.text    = currentGroupItem.item_quantity
         holder.itemAddedBy.text     = currentGroupItem.user_name
 
-        holder.itemOption.setOnClickListener {
-            val popupMenu: PopupMenu = PopupMenu(it.context, holder.itemOption)
+        holder.itemOption.setOnClickListener { task ->
+            val popupMenu: PopupMenu = PopupMenu(task.context, holder.itemOption)
             popupMenu.menuInflater.inflate(R.menu.option_item, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
@@ -45,6 +47,9 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
                             database.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     snapshot.child(currentGroupItem.id.toString()).ref.removeValue()
+                                        .addOnSuccessListener {
+                                            Toast.makeText(task.context, "Item Deleted Successfully", Toast.LENGTH_SHORT).show()
+                                        }
                                 }
 
                                 override fun onCancelled(error: DatabaseError) {
@@ -52,7 +57,6 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
                                 }
 
                             })
-                            Toast.makeText(it.context,"delete clicked", Toast.LENGTH_SHORT).show()
                         }
                     }
                     return true
@@ -60,6 +64,8 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
             })
             popupMenu.show()
         }
+
+        holder.itemPrice.text = currentGroupItem.item_price
     }
 
     override fun getItemCount(): Int {
@@ -67,10 +73,11 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
     }
 
     class groupViewHolder(groupItemView : View):RecyclerView.ViewHolder(groupItemView) {
-        val itemName : TextView = itemView.findViewById(R.id.itemName)
+        val itemName        : TextView = itemView.findViewById(R.id.itemName)
         val itemDescription : TextView = itemView.findViewById(R.id.itemDescription)
-        val itemQuantity : TextView = itemView.findViewById(R.id.itemQuantity)
-        val itemAddedBy : TextView = itemView.findViewById(R.id.itemAddedBy)
+        val itemQuantity    : TextView = itemView.findViewById(R.id.itemQuantity)
+        val itemAddedBy     : TextView = itemView.findViewById(R.id.itemAddedBy)
+        val itemPrice       : TextView = itemView.findViewById(R.id.itemPrice)
 
         val itemOption : ImageView = itemView.findViewById(R.id.grpItemOption)
 

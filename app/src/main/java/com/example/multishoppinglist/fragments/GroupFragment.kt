@@ -19,6 +19,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import android.util.Log
+
+
+
 
 class GroupFragment : Fragment() {
     private lateinit var binding: FragmentGroupBinding
@@ -67,8 +71,13 @@ class GroupFragment : Fragment() {
                 if (snapshot.exists()) {
                     groupArrayList.clear()
 
+                    var total : Int = 0
+
                     for (groupItemSnapshot in snapshot.children) {
                         val groupItem = groupItemSnapshot.getValue(GroupItem::class.java)
+
+//                        total = groupItem!!.item_price?.toInt()?.plus(total) ?: total
+//                        println("total: $total")
 
                         groupArrayList.add(groupItem!!)
                     }
@@ -82,6 +91,7 @@ class GroupFragment : Fragment() {
         })
 
     }
+
 
     private fun invite() {
         val inflater = layoutInflater
@@ -153,9 +163,10 @@ class GroupFragment : Fragment() {
             Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
         }
         alertDialog.setPositiveButton("Add"){ dialog, which ->
-            val itemName = binding.addTitle.text.toString()
+            val itemName        = binding.addTitle.text.toString()
             val itemDescription = binding.addDescription.text.toString()
-            val itemQuantity = binding.addQuantity.text.toString()
+            val itemQuantity    = binding.addQuantity.text.toString()
+            val itemPrice       = binding.addPrice.text.toString()
 
             database = FirebaseDatabase.getInstance().getReference("Users")
             val id = auth.currentUser?.uid
@@ -165,8 +176,7 @@ class GroupFragment : Fragment() {
 
                 database = FirebaseDatabase.getInstance().getReference("GroupItems")
                 val itemId = database.push().key        //to auto generate id
-                val grpItem =
-                    GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, group_name)
+                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, group_name)
                 database.child(group_name).child(itemId!!).setValue(grpItem).addOnSuccessListener {
                     Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
                 }

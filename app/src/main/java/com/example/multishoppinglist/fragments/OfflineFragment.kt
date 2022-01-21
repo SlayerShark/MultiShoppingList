@@ -103,14 +103,15 @@ class OfflineFragment : Fragment() {
             Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show()
         }
         alertDialog.setPositiveButton("Add"){ dialog, which ->
-            val itemName = binding.addTitle.text.toString()
+            val itemName        = binding.addTitle.text.toString()
             val itemDescription = binding.addDescription.text.toString()
-            val itemQuantity = binding.addQuantity.text.toString()
+            val itemQuantity    = binding.addQuantity.text.toString()
+            val itemPrice       = binding.addPrice.text.toString()
             val id = database.push().key        //to auto generate id
             val userId = Firebase.auth.currentUser?.uid
 
             database = FirebaseDatabase.getInstance().getReference("Items")
-            val item = Item(id, userId, itemName, itemDescription, itemQuantity, true)
+            val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice,true)
             database.child(id!!).setValue(item)
 
             Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()

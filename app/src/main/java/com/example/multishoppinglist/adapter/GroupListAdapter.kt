@@ -46,13 +46,11 @@ class GroupListAdapter(private val groupList : ArrayList<Group>) : RecyclerView.
                 .replace(R.id.onlineMainFragment, fragment)
                 .addToBackStack(null)
                 .commit()
-
         }
 
         holder.itemView.setOnLongClickListener(View.OnLongClickListener {
             val alertDialog = AlertDialog.Builder(it.context)
             alertDialog.setTitle("Delete ${groupItem.group_name} ?")
-            alertDialog.setCancelable(false)
 
             alertDialog.setNegativeButton("No") { dialog, which ->
             }

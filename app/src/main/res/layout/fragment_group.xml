@@ -41,34 +41,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#808080"
+            android:background="#FFFF00"
             android:gravity="end"
-            android:layout_marginTop="5dp">
+            android:paddingVertical="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Total Cost: "
-                android:textColor="@color/white"
+                android:textColor="#FF0000"
                 android:layout_marginStart="10dp"
+                android:textSize="20sp"
                 android:layout_weight="1"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Rs. "
-                android:textColor="@color/white" />
+                android:textSize="20sp"
+                android:textColor="#FF0000" />
             <TextView
                 android:id="@+id/totalCost"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="0"
-                android:textColor="@color/white" />
+                android:textSize="20sp"
+                android:textColor="#FF0000" />
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="/-"
-                android:textColor="@color/white"
+                android:textColor="#FF0000"
+                android:textSize="20sp"
                 android:layout_marginEnd="10dp" />
         </LinearLayout>
 
@@ -76,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Item"
-            android:layout_marginTop="20dp"
             android:drawablePadding="10dp"
             android:id="@+id/addItemDialog"
             android:layout_gravity="center"
@@ -84,7 +87,7 @@
             android:textSize="20sp"
             android:drawableLeft="@drawable/ic_add_black_24dp"
             android:textAlignment="center"
-            android:layout_marginBottom="20dp"/>
+            android:layout_margin="20dp"/>
 
     </LinearLayout>
 

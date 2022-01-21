@@ -6,12 +6,16 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multishoppinglist.R
+import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.ShItemBinding
 import com.example.multishoppinglist.model.Group
 import com.example.multishoppinglist.model.Item
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 
 class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<ShAdapter.MyViewHolder>() {
 
@@ -28,9 +32,10 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = itemList[position]
 
-        holder.itemName.text = currentItem.item_name?.capitalize() ?: toString()
+        holder.itemName.text        = currentItem.item_name?.capitalize() ?: toString()
         holder.itemDescription.text = currentItem.item_description
-        holder.itemQuantity.text = currentItem.item_quantity
+        holder.itemQuantity.text    = currentItem.item_quantity
+        holder.itemPrice.text       = currentItem.item_price
 
         holder.option.setOnClickListener {
             val popupMenu: PopupMenu = PopupMenu(it.context, holder.option)
@@ -61,6 +66,37 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
             popupMenu.show()
         }
 
+        holder.itemView.setOnClickListener {
+            val inflater = LayoutInflater.from(it.context)
+            val binding: DialogAddItemBinding = DialogAddItemBinding.inflate(inflater)
+            binding.addTitle.setText(currentItem.item_name)
+            binding.addQuantity.setText(currentItem.item_quantity)
+            binding.addDescription.setText(currentItem.item_description)
+            binding.addPrice.setText(currentItem.item_price)
+
+            val alertDialog = AlertDialog.Builder(it.context)
+            alertDialog.setTitle("View/Edit: ${currentItem.item_name}")
+            alertDialog.setView(binding.root)
+
+            alertDialog.setPositiveButton("Update"){ dialog, which ->
+                val itemName        = binding.addTitle.text.toString()
+                val itemDescription = binding.addDescription.text.toString()
+                val itemQuantity    = binding.addQuantity.text.toString()
+                val itemPrice       = binding.addPrice.text.toString()
+                val id              = currentItem.id
+                val userId = Firebase.auth.currentUser?.uid
+
+                database = FirebaseDatabase.getInstance().getReference("Items")
+                val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice, false)
+                database.child(id!!).setValue(item)
+
+                Toast.makeText(it.context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
+            }
+
+            alertDialog.create().show()
+
+        }
+
 /*
         holder.switch.setOnClickListener {
             if (!holder.switch.isChecked)
@@ -82,9 +118,10 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
     }
 
     class  MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemName : TextView = itemView.findViewById(R.id.itemName)
-        val itemDescription : TextView = itemView.findViewById(R.id.itemDescription)
-        val itemQuantity : TextView = itemView.findViewById(R.id.itemQuantity)
+        val itemName        : TextView  = itemView.findViewById(R.id.itemName)
+        val itemDescription : TextView  = itemView.findViewById(R.id.itemDescription)
+        val itemQuantity    : TextView  = itemView.findViewById(R.id.itemQuantity)
+        val itemPrice       : TextView  = itemView.findViewById(R.id.itemPrice)
 
         val option : ImageView = itemView.findViewById(R.id.shOption)
         @SuppressLint("UseSwitchCompatOrMaterialCode")

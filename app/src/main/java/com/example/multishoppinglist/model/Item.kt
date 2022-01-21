@@ -6,5 +6,6 @@ data class Item(
     var item_name:String        ?= null,
     var item_description:String ?= null,
     var item_quantity:String    ?= null,
+    var item_price:String       ?= null,
     var item_checked:Boolean    ?= null
 )

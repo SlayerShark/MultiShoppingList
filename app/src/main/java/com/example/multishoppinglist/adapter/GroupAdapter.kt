@@ -34,6 +34,7 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
         holder.itemDescription.text = currentGroupItem.item_description
         holder.itemQuantity.text    = currentGroupItem.item_quantity
         holder.itemAddedBy.text     = currentGroupItem.user_name
+        holder.itemPrice.text = currentGroupItem.item_price
 
         holder.itemOption.setOnClickListener { task ->
             val popupMenu: PopupMenu = PopupMenu(task.context, holder.itemOption)
@@ -65,7 +66,6 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
             popupMenu.show()
         }
 
-        holder.itemPrice.text = currentGroupItem.item_price
     }
 
     override fun getItemCount(): Int {

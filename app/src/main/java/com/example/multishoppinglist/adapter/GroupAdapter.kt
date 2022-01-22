@@ -13,7 +13,9 @@ import com.example.multishoppinglist.databinding.DialogAddItemBinding
 import com.example.multishoppinglist.databinding.ShGroupItemBinding
 import com.example.multishoppinglist.fragments.GroupFragment
 import com.example.multishoppinglist.model.GroupItem
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 
 class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerView.Adapter<GroupAdapter.groupViewHolder>() {
 
@@ -32,9 +34,10 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
         holder.itemName.text        = currentGroupItem.item_name?.capitalize() ?: String()
         holder.itemDescription.text = currentGroupItem.item_description
         holder.itemQuantity.text    = currentGroupItem.item_quantity
-        holder.itemAddedBy.text     = currentGroupItem.user_name
+        holder.itemAddedBy.text     = currentGroupItem.item_added_by
         holder.itemPrice.text       = currentGroupItem.item_price
         holder.switch.isChecked     = currentGroupItem.item_checked.toString().toBoolean()
+        holder.itemEditedByte.text  = currentGroupItem.item_edited_by
 
         holder.itemOption.setOnClickListener { task ->
             val popupMenu: PopupMenu = PopupMenu(task.context, holder.itemOption)
@@ -85,15 +88,21 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
                 val itemDescription = binding.addDescription.text.toString()
                 val itemQuantity    = binding.addQuantity.text.toString()
                 val itemPrice       = binding.addPrice.text.toString()
-                val itemId      = currentGroupItem.id
-                val userName    = currentGroupItem.user_name
-                val groupName   = currentGroupItem.group_name
-                val itemChecked = currentGroupItem.item_checked
+                val itemId          = currentGroupItem.id
+                val itemAddedBy     = currentGroupItem.item_added_by
+                val groupName       = currentGroupItem.group_name
+                val itemChecked     = currentGroupItem.item_checked
 
-                database = FirebaseDatabase.getInstance().getReference("GroupItems")
-                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, groupName, itemChecked)
-                database.child(groupName!!).child(itemId!!).setValue(grpItem).addOnSuccessListener {
-                    Toast.makeText(task.context, "Item Edited: $itemName", Toast.LENGTH_LONG).show()
+                database = FirebaseDatabase.getInstance().getReference("Users")
+                val id = Firebase.auth.currentUser?.uid
+                database.child(id!!).get().addOnSuccessListener {
+                    val itemEditedBy = it.child("name").value.toString()
+
+                    database = FirebaseDatabase.getInstance().getReference("GroupItems")
+                    val grpItem = GroupItem(itemId, itemAddedBy, itemEditedBy, itemName, itemDescription, itemQuantity, itemPrice, groupName, itemChecked)
+                    database.child(groupName!!).child(itemId!!).setValue(grpItem).addOnSuccessListener {
+                        Toast.makeText(task.context, "Item Edited: $itemName", Toast.LENGTH_LONG).show()
+                    }
                 }
 
             }
@@ -108,20 +117,26 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
             val itemQuantity    = currentGroupItem.item_quantity
             val itemPrice       = currentGroupItem.item_price
             val itemId          = currentGroupItem.id
-            val userName        = currentGroupItem.user_name
+            val itemAddedBy     = currentGroupItem.item_added_by
             val groupName       = currentGroupItem.group_name
 
-            database = FirebaseDatabase.getInstance().getReference("GroupItems")
+            database = FirebaseDatabase.getInstance().getReference("Users")
+            val id = Firebase.auth.currentUser?.uid
+            database.child(id!!).get().addOnSuccessListener {
+                val itemEditedBy = it.child("name").value.toString()
 
-            if (switchButton.isChecked){
-                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, groupName, "true")
-                database.child(groupName!!).child(itemId!!).setValue(grpItem).addOnSuccessListener {
-                    Toast.makeText(switchButton.context, "Completed", Toast.LENGTH_SHORT).show()
+                database = FirebaseDatabase.getInstance().getReference("GroupItems")
+
+                if (switchButton.isChecked){
+                    val grpItem = GroupItem(itemId, itemAddedBy, itemEditedBy, itemName, itemDescription, itemQuantity, itemPrice, groupName, "true")
+                    database.child(groupName!!).child(itemId!!).setValue(grpItem).addOnSuccessListener {
+                        Toast.makeText(switchButton.context, "Completed", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            else if (!switchButton.isChecked){
-                    val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, groupName, "false")
-                    database.child(groupName!!).child(itemId!!).setValue(grpItem)
+                else if (!switchButton.isChecked){
+                        val grpItem = GroupItem(itemId, itemAddedBy, itemEditedBy, itemName, itemDescription, itemQuantity, itemPrice, groupName, "false")
+                        database.child(groupName!!).child(itemId!!).setValue(grpItem)
+                }
             }
         }
     }
@@ -136,6 +151,7 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
         val itemQuantity    : TextView = itemView.findViewById(R.id.itemQuantity)
         val itemAddedBy     : TextView = itemView.findViewById(R.id.itemAddedBy)
         val itemPrice       : TextView = itemView.findViewById(R.id.itemPrice)
+        val itemEditedByte  : TextView = itemView.findViewById(R.id.itemEditedBy)
 
         val itemOption : ImageView = itemView.findViewById(R.id.grpItemOption)
 

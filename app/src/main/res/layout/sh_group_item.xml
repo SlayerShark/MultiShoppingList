@@ -42,7 +42,7 @@
                 tools:text="Description" />
 
             <LinearLayout
-                android:id="@+id/linearlayout"
+                android:id="@+id/ll_quantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/itemDescription"
@@ -62,10 +62,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_item_added"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_below="@+id/linearlayout" >
+                android:layout_below="@+id/ll_quantity" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -76,7 +77,24 @@
                     android:id="@+id/itemAddedBy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_item_edited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/ll_item_added" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last Edited by: " />
+
+                <TextView
+                    android:id="@+id/itemEditedBy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </RelativeLayout>

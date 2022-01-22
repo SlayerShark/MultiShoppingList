@@ -173,12 +173,13 @@ class GroupFragment : Fragment() {
             database = FirebaseDatabase.getInstance().getReference("Users")
             val id = auth.currentUser?.uid
             database.child(id!!).get().addOnSuccessListener {
-                val userName = it.child("name").value.toString()
+                val itemAddedBy = it.child("name").value.toString()
+                val itemEditedBy = itemAddedBy
 
 
                 database = FirebaseDatabase.getInstance().getReference("GroupItems")
                 val itemId = database.push().key        //to auto generate id
-                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, group_name, "false")
+                val grpItem = GroupItem(itemId, itemAddedBy, itemEditedBy, itemName, itemDescription, itemQuantity, itemPrice, group_name, "false")
                 database.child(group_name).child(itemId!!).setValue(grpItem).addOnSuccessListener {
                     Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
                 }

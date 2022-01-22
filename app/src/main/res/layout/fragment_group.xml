@@ -28,7 +28,10 @@
             android:text="Invite Friends"
             android:layout_gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/purple_700"/>
+            android:textColor="@color/purple_700"
+            android:drawableLeft="@drawable/ic_add_friend"
+            android:drawableTint="@color/purple_700"
+            android:drawablePadding="5dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

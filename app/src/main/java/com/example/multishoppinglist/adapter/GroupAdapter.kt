@@ -17,18 +17,18 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 
-class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerView.Adapter<GroupAdapter.groupViewHolder>() {
+class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
     private lateinit var binding: ShGroupItemBinding
     private lateinit var database: DatabaseReference
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): groupViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
         binding = ShGroupItemBinding.inflate(LayoutInflater.from(parent.context))
 
-        return groupViewHolder(binding.root)
+        return GroupViewHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: groupViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
         val currentGroupItem = groupItemList[position]
 
         holder.itemName.text        = currentGroupItem.item_name?.capitalize() ?: String()
@@ -145,7 +145,7 @@ class GroupAdapter(private val groupItemList : ArrayList<GroupItem>): RecyclerVi
         return groupItemList.size
     }
 
-    class groupViewHolder(groupItemView : View):RecyclerView.ViewHolder(groupItemView) {
+    class GroupViewHolder(groupItemView : View):RecyclerView.ViewHolder(groupItemView) {
         val itemName        : TextView = itemView.findViewById(R.id.itemName)
         val itemDescription : TextView = itemView.findViewById(R.id.itemDescription)
         val itemQuantity    : TextView = itemView.findViewById(R.id.itemQuantity)

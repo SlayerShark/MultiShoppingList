@@ -131,7 +131,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
         return itemList.size
     }
 
-    class  MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemName        : TextView  = itemView.findViewById(R.id.itemName)
         val itemDescription : TextView  = itemView.findViewById(R.id.itemDescription)
         val itemQuantity    : TextView  = itemView.findViewById(R.id.itemQuantity)

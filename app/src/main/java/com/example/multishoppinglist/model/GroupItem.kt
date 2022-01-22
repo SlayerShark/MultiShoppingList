@@ -7,5 +7,6 @@ data class GroupItem(
     var item_description    :String     ?= null,
     var item_quantity       :String     ?= null,
     var item_price          :String     ?= null,
-    var group_name          :String     ?= null
+    var group_name          :String     ?= null,
+    var item_checked        :String    ?= null
 )

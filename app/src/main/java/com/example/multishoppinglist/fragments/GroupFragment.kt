@@ -79,7 +79,9 @@ class GroupFragment : Fragment() {
 //                        total = groupItem!!.item_price?.toInt()?.plus(total) ?: total
 //                        println("total: $total")
 
-                        groupArrayList.add(groupItem!!)
+                        if (groupItem != null) {
+                            groupArrayList.add(groupItem)
+                        }
                     }
                     recyclerView.adapter = GroupAdapter(groupArrayList)
                 }
@@ -176,7 +178,7 @@ class GroupFragment : Fragment() {
 
                 database = FirebaseDatabase.getInstance().getReference("GroupItems")
                 val itemId = database.push().key        //to auto generate id
-                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, group_name)
+                val grpItem = GroupItem(itemId, userName, itemName, itemDescription, itemQuantity, itemPrice, group_name, "false")
                 database.child(group_name).child(itemId!!).setValue(grpItem).addOnSuccessListener {
                     Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
                 }

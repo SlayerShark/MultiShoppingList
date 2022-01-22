@@ -36,6 +36,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
         holder.itemDescription.text = currentItem.item_description
         holder.itemQuantity.text    = currentItem.item_quantity
         holder.itemPrice.text       = currentItem.item_price
+        holder.itemCheckbox.isChecked     = currentItem.item_checked.toString().toBoolean()
 
         holder.option.setOnClickListener {
             val popupMenu: PopupMenu = PopupMenu(it.context, holder.option)
@@ -66,6 +67,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
             popupMenu.show()
         }
 
+        //for updating or viewing item
         holder.itemView.setOnClickListener {
             val inflater = LayoutInflater.from(it.context)
             val binding: DialogAddItemBinding = DialogAddItemBinding.inflate(inflater)
@@ -85,9 +87,10 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
                 val itemPrice       = binding.addPrice.text.toString()
                 val id              = currentItem.id
                 val userId = Firebase.auth.currentUser?.uid
+                val itemChecked = currentItem.item_checked
 
                 database = FirebaseDatabase.getInstance().getReference("Items")
-                val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice, false)
+                val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice, itemChecked)
                 database.child(id!!).setValue(item)
 
                 Toast.makeText(it.context, "Added Item: $itemName", Toast.LENGTH_LONG).show()
@@ -97,17 +100,28 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
 
         }
 
-/*
-        holder.switch.setOnClickListener {
-            if (!holder.switch.isChecked)
-                Toast.makeText(it.context, currentItem.item_name, Toast.LENGTH_SHORT).show()
+        //to set the item as purchased
+        holder.itemCheckbox.setOnCheckedChangeListener { checkBox, _ ->
+            val itemName = currentItem.item_name
+            val itemDescription = currentItem.item_description
+            val itemQuantity = currentItem.item_quantity
+            val itemPrice = currentItem.item_price
+            val id = currentItem.id
+            val userId = Firebase.auth.currentUser?.uid
+
+            database = FirebaseDatabase.getInstance().getReference("Items")
+
+            if (checkBox.isChecked) {
+                val item =
+                    Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice, true)
+                database.child(id!!).setValue(item)
+            }
+            else if (!checkBox.isChecked) {
+                val item =
+                    Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice, false)
+                database.child(id!!).setValue(item)
+            }
         }
-*/
-//        holder.switch.isSelected = currentItem.equals(currentItem.item_checked)
-
-
-
-
 
 
     }
@@ -125,7 +139,7 @@ class ShAdapter(private val itemList : ArrayList<Item>) : RecyclerView.Adapter<S
 
         val option : ImageView = itemView.findViewById(R.id.shOption)
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        val switch : Switch    = itemView.findViewById(R.id.itemSwitch)
+        val itemCheckbox : CheckBox    = itemView.findViewById(R.id.itemCheckbox)
     }
 
 }

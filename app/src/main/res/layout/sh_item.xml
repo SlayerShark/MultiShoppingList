@@ -115,11 +115,19 @@
                 android:background="@drawable/more"
                 android:backgroundTint="@color/purple_700" />
 
-            <Switch
-                android:id="@+id/itemSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/itemCheckbox"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <!--
+                        <Switch
+                            android:id="@+id/itemSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            -->
         </LinearLayout>
 
     </LinearLayout>

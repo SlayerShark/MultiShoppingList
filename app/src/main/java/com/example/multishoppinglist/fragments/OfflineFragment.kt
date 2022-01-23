@@ -75,6 +75,13 @@ class OfflineFragment : Fragment() {
                         if (userId == Firebase.auth.currentUser?.uid){
                             if (item != null) {
                                 itemArrayList.add(item)
+
+                                //to add all the item price and display it in the totalCost TextView
+                                var totalCost = 0
+                                for (i in 0 until itemArrayList.size) {
+                                    totalCost += itemArrayList[i].item_price?.toInt() ?: i
+                                }
+                                binding.totalCost.text = totalCost.toString()
                             }
                         }
                     }
@@ -111,7 +118,7 @@ class OfflineFragment : Fragment() {
             val userId = Firebase.auth.currentUser?.uid
 
             database = FirebaseDatabase.getInstance().getReference("Items")
-            val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice,true)
+            val item = Item(id, userId, itemName, itemDescription, itemQuantity, itemPrice,false)
             database.child(id!!).setValue(item)
 
             Toast.makeText(context, "Added Item: $itemName", Toast.LENGTH_LONG).show()

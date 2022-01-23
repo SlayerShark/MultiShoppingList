@@ -76,11 +76,16 @@ class GroupFragment : Fragment() {
                     for (groupItemSnapshot in snapshot.children) {
                         val groupItem = groupItemSnapshot.getValue(GroupItem::class.java)
 
-//                        total = groupItem!!.item_price?.toInt()?.plus(total) ?: total
-//                        println("total: $total")
-
                         if (groupItem != null) {
                             groupArrayList.add(groupItem)
+
+                            //to add all the item price and display it in the totalCost TextView
+                            var totalCost = 0
+                            for (i in 0 until groupArrayList.size) {
+                                totalCost += groupArrayList[i].item_price?.toInt() ?: i
+                            }
+                            binding.totalCost.text = totalCost.toString()
+
                         }
                     }
                     recyclerView.adapter = GroupAdapter(groupArrayList)

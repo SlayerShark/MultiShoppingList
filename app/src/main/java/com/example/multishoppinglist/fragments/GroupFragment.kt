@@ -106,7 +106,7 @@ class GroupFragment : Fragment() {
 
         binding.addGroupTitle.hint = "Email Address"
         val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle("Join Group")
+        alertDialog.setTitle("Invite via Email")
         alertDialog.setView(binding.root)
         alertDialog.setCancelable(false)
 
@@ -135,7 +135,7 @@ class GroupFragment : Fragment() {
                         database.child(eml).child(groupName!!).setValue(invite).addOnSuccessListener {
                             Toast.makeText(
                                 context,
-                                "group created : $groupName",
+                                "$inEmail invited to the group",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
